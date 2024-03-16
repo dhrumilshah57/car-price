@@ -159,7 +159,7 @@ public class WebCrawler {
                 	
                 	Scanner indexScanner = new Scanner(System.in);
                 	
-                    index.buildIndex("/Users/meghpatel/eclipse-workspace/Automobile_pricing/pages/");
+                    index.buildIndex("..//car-price//pages");
                     
                     System.out.println("Enter the keyword to search: ");
                     String keyword = indexScanner.nextLine();
@@ -167,17 +167,17 @@ public class WebCrawler {
                     break;
 
                 case 5:
-                    freqCount.countFrequency("C:\\Users\\dhrum\\Desktop\\ACC\\Automobile_pricing\\pages");
+                    freqCount.countFrequency("..//car-price//pages");
                     break;
                     
                 case 6:
-                    pageRanking.PageRank("C:\\Users\\dhrum\\Desktop\\ACC\\Automobile_pricing\\pages");
+                    pageRanking.PageRank("..//car-price//pages");
                     break;
                     
                 case 7:
                 	// Read text files and build dictionary trie
                     SpellChecker spellChecker = new SpellChecker();
-                    String folderPath = "C:\\Users\\dhrum\\Desktop\\ACC\\Automobile_pricing\\pages";
+                    String folderPath = "..//car-price//pages";
                     spellChecker.readTextFilesAndBuildDictionary(folderPath);
 
                     // Prompt user to input string for spell checking
@@ -198,7 +198,7 @@ public class WebCrawler {
                     break;
                     
                 case 8:
-                	SpellSuggestion spellSuggestion = new SpellSuggestion("C:\\Users\\dhrum\\Desktop\\ACC\\Automobile_pricing\\pages");
+                	SpellSuggestion spellSuggestion = new SpellSuggestion("..//car-price//pages");
                 	
                 	Scanner suggestionScanner = new Scanner(System.in);
                     System.out.println("Enter a word to check for suggestions:");
