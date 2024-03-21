@@ -229,7 +229,6 @@ public class WebCrawler {
                 	}
                 	break;
 
-
                 case 0:
                 	System.out.println("Thank you!");
                     break;
@@ -240,5 +239,4 @@ public class WebCrawler {
             }
         }
     }
-
 }
