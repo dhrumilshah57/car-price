@@ -4,16 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -62,6 +54,7 @@ public class WebCrawler {
     public static void main(String[] args) throws IOException {
         int maxUrlsToVisit = 15;
         String saveDir = "pages";
+        int option = 0;
         
         HashMap<String, Integer> wordFreqMap = new HashMap<>();
         
@@ -72,23 +65,31 @@ public class WebCrawler {
         CarPriceScrapper priceScrapper = new CarPriceScrapper();
 
         Scanner scanner = new Scanner(System.in);
-        int option;
 
-        do {
-            System.out.println("\n1: Crawl website");
-            System.out.println("2: Scrap car brands according to Price");
-            System.out.println("3: Scrap car brands according to MPG");
-            System.out.println("4: Inverted indexing");
-            System.out.println("5: Frequency count");
-            System.out.println("6: Page ranking");
-            System.out.println("7: Spell checking");
-            System.out.println("8: Spell suggestion");
-            System.out.println("9: Search words frequency");
-            System.out.println("0: Terminate\n");
-            
+
+        while(true) {
+
+                System.out.println("\n1: Crawl website");
+                System.out.println("2: Scrap car brands according to Price");
+                System.out.println("3: Scrap car brands according to MPG");
+                System.out.println("4: Inverted indexing");
+                System.out.println("5: Frequency count");
+                System.out.println("6: Page ranking");
+                System.out.println("7: Spell checking");
+                System.out.println("8: Spell suggestion");
+                System.out.println("9: Search words frequency");
+                System.out.println("0: Terminate\n");
+
+
             System.out.println("Enter Value: ");
-            option = scanner.nextInt();
-            scanner.nextLine();
+
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                continue;
+
+            }
 
             switch (option) {
                 case 1:
@@ -234,10 +235,10 @@ public class WebCrawler {
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please try again.");
+                    System.out.println("Invalid option. Please enter a number between 0 and 9.");
                     break;
             }
-        } while (option != 0);
+        }
     }
 
 }
