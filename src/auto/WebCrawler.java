@@ -39,7 +39,7 @@ public class WebCrawler {
             String url = urlsToVisit.poll();
             if (!visitedUrls.contains(url)) {
                 visitedUrls.add(url);
-                System.out.println("Visiting: " + url);
+                System.out.println("Crawling: " + url);
                 try {
                     String links = HTMLParser.parse(url, saveDir);
                     for (String nextUrl : links.split(" ")) {
@@ -75,19 +75,18 @@ public class WebCrawler {
 
         Scanner scanner = new Scanner(System.in);
 
-
         while(continueRunning) {
 
-                System.out.println("\n1: Crawl website");
-                System.out.println("2: Scrap car brands according to Price");
-                System.out.println("3: Scrap car brands according to MPG");
-                System.out.println("4: Inverted indexing");
-                System.out.println("5: Frequency count");
-                System.out.println("6: Page ranking");
-                System.out.println("7: Spell checking");
-                System.out.println("8: Spell suggestion");
-                System.out.println("9: Search words frequency");
-                System.out.println("0: Terminate\n");
+            System.out.println("\n1: Crawl website");
+            System.out.println("2: Scrape car brands according to Price");
+            System.out.println("3: Scrape car brands according to MPG");
+            System.out.println("4: Inverted indexing");
+            System.out.println("5: Frequency count");
+            System.out.println("6: Page ranking");
+            System.out.println("7: Spell checking");
+            System.out.println("8: Spell suggestion");
+            System.out.println("9: Search words frequency");
+            System.out.println("0: Terminate\n");
 
 
             System.out.println("Enter Value: ");
@@ -113,14 +112,13 @@ public class WebCrawler {
                     } while (!UrlValidator.validate(startingUrl));
                     crawler.clear();
                     crawler.crawl(startingUrl, saveDir);
-                    continueRunning = false;
 
                     break;
 
                 case 2:
-                	Scanner priceScanner = new Scanner(System.in);
+                    Scanner priceScanner = new Scanner(System.in);
 
-                	System.out.print("Enter car name: ");
+                    System.out.print("Enter car name: ");
                     String carNamePrice = priceScanner.nextLine();
                     System.out.print("Enter min. price: ");
                     int minPrice = priceScanner.nextInt();
@@ -130,71 +128,68 @@ public class WebCrawler {
 
                     // Scrap car price data
                     priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
-                    continueRunning = false;
+
                     break;
-
-
 
                 case 3:
 
-                	CarMpgScrapper carScrapper = new CarMpgScrapper();
+                    CarMpgScrapper carScrapper = new CarMpgScrapper();
 
-                	Scanner carScanner = new Scanner(System.in);
+                    Scanner carScanner = new Scanner(System.in);
 
-            		// Prompt the user to enter the URL of the website to scrape
-            		System.out.print("Enter the name of the Car: ");
-            		String carName = carScanner.nextLine();
+                    // Prompt the user to enter the URL of the website to scrape
+                    System.out.print("Enter the name of the Car: ");
+                    String carName = carScanner.nextLine();
 
-            		if (wordFreqMap.containsKey(carName)) {
+                    if (wordFreqMap.containsKey(carName)) {
                         wordFreqMap.put(carName, wordFreqMap.get(carName) + 1);
                     } else {
                         wordFreqMap.put(carName, 1);
                     }
 
-            		// Prompt the user to enter the year of the cars to scrape
-            		System.out.print("Enter the year of the cars to scrape: ");
-            		int year = carScanner.nextInt();
+                    // Prompt the user to enter the year of the cars to scrape
+                    System.out.print("Enter the year of the cars to scrape: ");
+                    int year = carScanner.nextInt();
 
-            		// Prompt the user to enter the mileage range to sort by
-            		System.out.print("Enter the minimum mileage (mpg): ");
-            		int minMpg = carScanner.nextInt();
-            		System.out.print("Enter the maximum mileage (mpg): ");
-            		int maxMpg = carScanner.nextInt();
-            		System.out.println();
+                    // Prompt the user to enter the mileage range to sort by
+                    System.out.print("Enter the minimum mileage (mpg): ");
+                    int minMpg = carScanner.nextInt();
+                    System.out.print("Enter the maximum mileage (mpg): ");
+                    int maxMpg = carScanner.nextInt();
+                    System.out.println();
 
-            		// Scrape the car data and print the sorted results
-            		carScrapper.scrapMileage(carName, year, minMpg, maxMpg);
-                    continueRunning = false;
+                    // Scrape the car data and print the sorted results
+                    carScrapper.scrapMileage(carName, year, minMpg, maxMpg);
 
                     break;
 
                 case 4:
 
-                	Scanner indexScanner = new Scanner(System.in);
-
-                    index.buildIndex("..//pages");
+                    index.buildIndex("C:\\car-price\\pages");
 
                     System.out.println("Enter the keyword to search: ");
-                    String keyword = indexScanner.nextLine();
+                    String keyword = scanner.nextLine();
                     index.searchKeyword(keyword);
-                    continueRunning = false;
 
                     break;
 
                 case 5:
-                    freqCount.countFrequency("..//pages","bentley");
-                    continueRunning = false;
+                    //
+                    System.out.println("Enter the keyword to search: ");
+                    String keyword1 = scanner.nextLine();
+                    freqCount.countFrequency("C:\\car-price\\pages", keyword1);
                     break;
 
                 case 6:
-                    pageRanking.PageRank("pages","bentley");
-                    continueRunning = false;
+                    System.out.println("Enter the keyword to search: ");
+                    String keyword2 = scanner.nextLine();
+                    pageRanking.PageRank("C:\\car-price\\pages",keyword2);
                     break;
 
                 case 7:
-                	// Read text files and build dictionary trie
+                    // Read text files and build dictionary trie
                     SpellChecker spellChecker = new SpellChecker();
-                    String folderPath = "..//pages";
+                    String folderPath = "C:\\car-price\\pages";
                     spellChecker.readTextFilesAndBuildDictionary(folderPath);
 
                     // Prompt user to input string for spell checking
@@ -212,14 +207,13 @@ public class WebCrawler {
                     String output = spellChecker.spellCheck(input);
                     System.out.println("Spell checked string:");
                     System.out.println(output);
-                    continueRunning = false;
 
                     break;
 
                 case 8:
-                	SpellSuggestion spellSuggestion = new SpellSuggestion("..//pages");
+                    SpellSuggestion spellSuggestion = new SpellSuggestion("C:\\car-price\\pages");
 
-                	Scanner suggestionScanner = new Scanner(System.in);
+                    Scanner suggestionScanner = new Scanner(System.in);
                     System.out.println("Enter a word to check for suggestions:");
                     String word = suggestionScanner.nextLine();
 
@@ -235,23 +229,21 @@ public class WebCrawler {
                     } else {
                         System.out.println("Did you mean " + suggestion + " ?");
                     }
-                    continueRunning = false;
 
                     break;
 
                 case 9:
-                	ArrayList<Map.Entry<String, Integer>> list = new ArrayList<>(wordFreqMap.entrySet());
-                	Collections.sort(list, Map.Entry.<String, Integer>comparingByValue().reversed());
+                    ArrayList<Map.Entry<String, Integer>> list = new ArrayList<>(wordFreqMap.entrySet());
+                    Collections.sort(list, Map.Entry.<String, Integer>comparingByValue().reversed());
 
-                	System.out.println("Word Frequencies (Descending Order): ");
-                	for (Map.Entry<String, Integer> entry : list) {
-                	    System.out.println(entry.getKey() + ": " + entry.getValue());
-                	}
-                    continueRunning = false;
-                	break;
+                    System.out.println("Word Frequencies (Descending Order): ");
+                    for (Map.Entry<String, Integer> entry : list) {
+                        System.out.println(entry.getKey() + ": " + entry.getValue());
+                    }
+                    break;
 
                 case 0:
-                	System.out.println("Thank you!");
+                    System.out.println("Thank you!");
                     continueRunning = false;
                     break;
 
