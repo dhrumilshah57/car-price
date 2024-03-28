@@ -7,45 +7,37 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class FrequencyCount {
 
-    public void countFrequency(String filePath) {
+    public void countFrequency(String filePath, String keyword) {
         // The local directory that contains the web pages
         File folder = new File(filePath);
-        // To get all files from the directory
+
+        // Check if the folder exists
+        if (!folder.exists() || !folder.isDirectory()) {
+            System.out.println("Error: The specified folder does not exist or is not a directory.");
+            return;
+        }
+
+        // Get all files from the directory
         File[] listOfFiles = folder.listFiles();
 
-        Scanner scanner = new Scanner(System.in);
-        List<String> keywords = new ArrayList<String>();
-        while (keywords.isEmpty()) {
-            System.out.print("Enter the keyword: ");
-            String input = scanner.nextLine();
-            for (String keyword : input.split(",")) {
-                keywords.add(keyword.trim().toLowerCase());
-            }
-            if (keywords.isEmpty()) {
-                System.out.println("Please enter at least one keyword.");
-            }
+        // Check if the list of files is null or empty
+        if (listOfFiles == null || listOfFiles.length == 0) {
+            System.out.println("Error: The folder is empty or does not contain any files.");
+            return;
         }
-        System.out.println(keywords);
 
-        // A Map to store the frequency of each web page that contains the keyword
-        Map<String, Integer> pageFrequencies = new HashMap<>();
+        List<String> keywords = new ArrayList<>();
+        keywords.add(keyword.toLowerCase());
 
-        // To initialize the 0 frequency for each of the web page
-        for (File file : listOfFiles) {
-            // Checker to check if the file is in .htm format
-            if (file.getName().endsWith(".txt")) {
-                pageFrequencies.put(file.getName(), 0);
-            }
-        }
+        int totalFrequency = 0; // Total frequency count for the specified keyword
 
         // To loop through each web page
         for (File file : listOfFiles) {
-            // Checker to check if the file is in .htm format
+            // Checker to check if the file is in .txt format
             if (file.getName().endsWith(".txt")) {
                 // to read the contents of the file
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -59,8 +51,7 @@ public class FrequencyCount {
 
                             // To check if the word is a keyword
                             if (keywords.contains(word)) {
-                                // To increase the frequency of the web page
-                                pageFrequencies.put(file.getName(), pageFrequencies.get(file.getName()) + 1);
+                                totalFrequency++;
                             }
                         }
                     }
@@ -69,16 +60,52 @@ public class FrequencyCount {
                 }
             }
         }
+
+        // Print the total frequency count for the specified keyword
+        System.out.println("Total frequency count for the keyword '" + keyword + "': " + totalFrequency);
+
         // To print the web pages and their frequencies based on keyword matches
-        System.out.println("Web pages and their frequencies based on keyword matches: \n");
-        for (String page : pageFrequencies.keySet()) {
-            int frequency = pageFrequencies.get(page);
-            if (frequency > 0) {
-                System.out.println(page + " - frequency: " + frequency);
-            }
-            else {
-            	System.out.println(page + " - frequency: " + frequency);
+        System.out.println("\nWeb pages and their frequencies based on keyword matches: \n");
+        boolean wordFound = false; // Flag to check if the word is found in any page
+        for (File file : listOfFiles) {
+            // Checker to check if the file is in .txt format
+            if (file.getName().endsWith(".txt")) {
+                int frequency = countFrequencyInFile(file, keyword);
+                if (frequency > 0) {
+                    System.out.println(file.getName() + " - frequency: " + frequency);
+                    wordFound = true;
+                }
             }
         }
+
+        // If the word is not found in any page, print a message indicating so
+        if (!wordFound) {
+            System.out.println("Oops! The word '" + keyword + "' is not present in any page.");
+        }
+    }
+
+    // Helper method to count the frequency of the keyword in a specific file
+    private int countFrequencyInFile(File file, String keyword) {
+        int frequency = 0;
+        // to read the contents of the file
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            // To read each line of the file
+            while ((line = reader.readLine()) != null) {
+                // To Tokens the line into words
+                StringTokenizer tokenizer = new StringTokenizer(line);
+                while (tokenizer.hasMoreTokens()) {
+                    String word = tokenizer.nextToken().toLowerCase().replaceAll("[^a-z0-9]+", "");
+
+                    // To check if the word is equal to the keyword
+                    if (word.equals(keyword)) {
+                        frequency++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return frequency;
     }
 }

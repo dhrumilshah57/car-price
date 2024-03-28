@@ -3,64 +3,40 @@ package auto;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class PageRanking {
 
     // Inner class to represent a web page
     class Page {
-        String WebPagename; // to name the web page we are ranking 
+        String WebPagename; // to name the web page we are ranking
         int score; // to store the scores of the web page
 
-        // Defining Constructor to store the name and score 
+        // Defining Constructor to store the name and score
         Page(String name, int score) {
             this.WebPagename = name;
             this.score = score;
         }
     }
 
-    public void PageRank(String filePath) {
-        // The local directory that contains the web pages 
+    public void PageRank(String filePath, String keyword) {
+        // The local directory that contains the web pages
         File folder = new File(filePath);
         // To get all files from the directory
         File[] listOfFiles = folder.listFiles();
 
-        Scanner scanner = new Scanner(System.in);
-        //Defining Array List 
-        List<String> keywords = new ArrayList<String>();
-        while (keywords.isEmpty()) {
-        	//Entering keyword to find relavant page 
-            System.out.print("Enter the keyword: ");
-            String input = scanner.nextLine();
-            for (String keyword : input.split(",")) {
-                keywords.add(keyword.trim().toLowerCase());
-            }
-            if (keywords.isEmpty()) {
-                System.out.println("Please enter at least one keyword.");
-            }
-        }
-        System.out.println(keywords);
+        // Initialize keyword frequency map
+        Map<String, Integer> keywordFrequency = new HashMap<>();
 
-        // A Map to store the frequency of each keyword that is mentioned above
-        Map<String, Integer> keywordFrequencies = new HashMap<>();
+        // Initialize keyword frequency to 0
+        keywordFrequency.put(keyword, 0);
 
-        // To initialize the 0 frequency for each of the keyword
-        for (String keyword : keywords) {
-            keywordFrequencies.put(keyword, 0);
-        }
-
-        // Initialize a Priority queue to store the web pages as per their respective
-        // scores
+        // Initialize a Priority queue to store the web pages as per their respective scores
         PriorityQueue<Page> heap = new PriorityQueue<>(10, (p1, p2) -> Integer.compare(p2.score, p1.score));
+
         // To loop through each web page
         for (File file : listOfFiles) {
-            // Checker to check if the file is in .htm format
+            // Checker to check if the file is in .txt format
             if (file.getName().endsWith(".txt")) {
                 int score = 0;
                 // to read the contents of the file
@@ -68,34 +44,32 @@ public class PageRanking {
                     String line;
                     // To read each line of the file
                     while ((line = reader.readLine()) != null) {
-                        // To Tokens the line into words
+                        // Tokenize the line into words
                         StringTokenizer tokenizer = new StringTokenizer(line);
                         while (tokenizer.hasMoreTokens()) {
                             String word = tokenizer.nextToken().toLowerCase().replaceAll("[^a-z0-9]+", "");
 
-                            // To check if the word is a keyword
-                            if (keywords.contains(word)) {
-                                // To increase the score and frequency of the keyword
-                                score += keywordFrequencies.getOrDefault(word, 0) + 1;
-                                keywordFrequencies.put(word, keywordFrequencies.getOrDefault(word, 0) + 1);
+                            // Check if the word is the keyword
+                            if (word.equals(keyword)) {
+                                // Increase the score and frequency of the keyword
+                                score += keywordFrequency.getOrDefault(word, 0) + 1;
+                                keywordFrequency.put(word, keywordFrequency.getOrDefault(word, 0) + 1);
                             }
                         }
                     }
-                    // Reset the frequency of each keyword to 0
-                    for (String keyword : keywords) {
-                        keywordFrequencies.put(keyword, 0);
-                    }
+                    // Reset the frequency of the keyword to 0
+                    keywordFrequency.put(keyword, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                // To create a page object with the name and score of the file
+                // Create a page object with the name and score of the file
                 Page page = new Page(file.getName(), score);
-                // To add the page object to the earlier made priority queue
+                // Add the page object to the priority queue
                 heap.offer(page);
             }
         }
-        // To print the top 10 web pages based on keyword matches
-        System.out.println("Top 10 web pages based on keyword matches: \n");
+        // Print the top 10 web pages based on keyword matches
+        System.out.println("Top 10 web pages based on keyword matches for \"" + keyword + "\":\n");
         List<Page> topPages = new ArrayList<>();
         for (int i = 1; i < 11; i++) {
             if (heap.isEmpty()) {

@@ -13,111 +13,73 @@ import org.jsoup.select.Elements;
 
 public class CarPriceScrapper {
 
-  // Method is declared to scrape the car price based on car name, min price, and max price
-//  public void ScrapCarPriceData(String carName, int minPrice, int maxPrice) throws IOException {}
-	public void ScrapCarPriceData(String carName, int minPrice, int maxPrice) throws IOException {
-	    // The URL for the car search is defined
-	    String url = "https://www.kbb.com/car-finder/?manufacturers=" + carName.replace(" ", "%20")+"&pricerange="+minPrice+"-"+maxPrice;
-	    
-	    // Print the URL for debugging purposes
-	    System.out.println("Scraping URL: " + url);
+    public void scrapCarPriceData(String carName, int minPrice, int maxPrice) {
+        try {
+            // URL for the car search
+            String url = "https://www.kbb.com/car-finder/?manufacturers=" + carName.replace(" ", "%20")
+                    + "&pricerange=" + minPrice + "-" + maxPrice;
+System.out.println(url);
+            // Connect to the website and get its HTML document
+            Document doc = Jsoup.connect(url).get();
 
-	    // Using Jsoup to connect to the website and get its HTML document
-	    try {
-	        Document doc = Jsoup.connect(url).get();
-	        
-	        // Select the car elements from the HTML document
-	        Elements carElements = doc.select("div.ewtqiv33.css-jwnqcy.e11el9oi0");
+            // Select car elements from the HTML document
+            Elements carElements = doc.select("div.css-11diq1x.e1qqueke1");
 
-	        // Create an empty array list to store the scraped car objects
-	        List<Car> cars = new ArrayList<>();
-	        // Loop through each car element and extract relevant information
-	        for (Element carElement : carElements) {
-	          String name = carElement.select("h2.css-iqcfy5.e148eed12").text(); // Extracting car name
-	          String year = name.split(" ")[0]; // Extracting car year from the car name
-	          String price = carElement.select("div.css-fpbjth.e151py7u1").text(); // Extracting car price
-	          String mpg = carElement.select("div.css-fpbjth.e151py7u1").text(); // Extracting car MPG
+            // List to store scraped car objects
+            List<Car> cars = new ArrayList<>();
 
-	          // Filtering cars based on user input for min price and max price
-	          if (Integer.parseInt(price.replaceAll("[^0-9]", "")) >= minPrice
-	                  && Integer.parseInt(price.replaceAll("[^0-9]", "")) <= maxPrice) {
-	        	  
-	            // Create a car object and add it to the list of cars
-	            Car car = new Car(name, year, price, mpg);
-	            cars.add(car);
-	          }
-	        }
+            // Loop through each car element and extract relevant information
+            for (Element carElement : carElements) {
+                String name = carElement.select("#vehicle_card_2 > div.css-ssaa7u.ewtqiv32 > div.css-4w1p2i.e19qstch21 > div > div.css-gk1xze.ex4y58i4 > a > h2").text(); // Car name
+                String year = name.split(" ")[0]; // Car year
+                String price = carElement.select("#vehicle_card_1 > div.css-ssaa7u.ewtqiv32 > div.css-1t1oons.e19qstch19 > div.css-15j21fj.e19qstch15 > div > div > div > div.css-fpbjth.e151py7u1").text(); // Car price
+                String mpg = carElement.select("#vehicle_card_1 > div.css-ssaa7u.ewtqiv32 > div.css-1t1oons.e19qstch19 > div.css-14q4cew.e19qstch18 > div.css-n59ln1.e181er9y2 > div > div > div.css-fpbjth.e151py7u1").text(); // Car MPG
 
-	        // Sort the list of cars by price in descending order
-	        Collections.sort(cars, (car1, car2) -> car2.getPrice().compareTo(car1.getPrice()));
+                // Filtering cars based on user input for min and max price
+                int carPrice = Integer.parseInt(price.replaceAll("[^0-9]", ""));
+                if (carPrice >= minPrice && carPrice <= maxPrice) {
+                    cars.add(new Car(name, year, price, mpg)); // Add car to the list
+                }
+            }
 
-	        // Print the list of cars
-	        for (Car car : cars) {
-	          System.out.println(car);
-	        }
-	    } catch (HttpStatusException e) {
-	        if (e.getStatusCode() == 404) {
-	            System.err.println("Error: The car model was not found.");
-	        } else {
-	            throw e;
-	        }
-	    }
-	}
-  // Inner class to represent a Car object
-  static class Car {
-    String name;
-    String year;
-    String price;
-    String mpg;
+            // Sort the list of cars by price in ascending order (as string)
+            Collections.sort(cars, (car1, car2) -> car1.getPrice().compareTo(car2.getPrice()));
 
-    // Constructor for Car object
-    public Car(String name, String year, String price, String mpg) {
-      this.name = name;
-      this.year = year;
-      this.price = price;
-      this.mpg = mpg;
+            // Print the list of cars
+            for (Car car : cars) {
+                System.out.println(car + "index");
+            }
+        } catch (HttpStatusException e) {
+            if (e.getStatusCode() == 404) {
+                System.err.println("Error: The car model was not found.");
+            } else {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Getter and Setter methods for Car object properties
-    public String getName() {
-      return name;
-    }
+    static class Car {
+        String name;
+        String year;
+        String price;
+        String mpg;
 
-    public void setName(String name) {
-      this.name = name;
-    }
+        public Car(String name, String year, String price, String mpg) {
+            this.name = name;
+            this.year = year;
+            this.price = price;
+            this.mpg = mpg;
+        }
 
-    public String getYear() {
-      return year;
-    }
+        public String getPrice() {
+            return price;
+        }
 
-    public void setYear(String year) {
-      this.year = year;
+        @Override
+        public String toString() {
+            return name + " " + year + ", Price: " + price + ", MPG: " + mpg;
+        }
     }
-
-    public String getPrice() {
-      return price;
-    }
-
-    public void setPrice(String price) {
-      this.price = price;
-    }
-
-    public String getMpg() {
-      return mpg;
-    }
-
-    public void setMpg(String mpg) {
-     
-      this.mpg = mpg;
-    }
-
-    // Override toString() method to customize the string representation of Car object
-    @Override
-    public String toString() {
-      return name + " " + year + ", Price: " + price + ", MPG: " + mpg;
-   
-
-    }
-  }
 }
