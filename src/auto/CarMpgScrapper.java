@@ -24,7 +24,7 @@ public class CarMpgScrapper {
 			Document doc = Jsoup.connect(url).get();
 
 			// Select car elements from the HTML document
-			Elements carElements = doc.select("div.css-11diq1x.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
+			Elements carElements = doc.select("div.css-1b1a19r.e1qqueke0 > div.css-ai263y.e1qqueke1");
 
 			// List to store scraped car objects
 			List<Car> cars = new ArrayList<>();
@@ -66,29 +66,6 @@ public class CarMpgScrapper {
 		}
 	}
 	// Method to check if the word corresponds to a model name
-	public boolean checkIfModelName(String word) {
-		try {
-
-			String url = "https://www.kbb.com/car-finder";
-			Document doc = Jsoup.connect(url).get();
-			Elements labelElements = doc.select("#manufacturers-content > div > div > label");
-
-// Extract model names from the label elements and check if the input word matches any of them
-			for (Element labelElement : labelElements) {
-				String modelName = labelElement.select(".label-container").text().trim().toLowerCase();
-
-				if(modelName.equalsIgnoreCase(word)){     return true;}
-			}
-		} catch (IOException e) {
-
-			e.printStackTrace();
-			return false;
-			// Handle connection or parsing errors
-			// You may choose to return false or throw the exception here
-		}
-
-		return false;
-	}
 
 	static class Car {
 		String name;

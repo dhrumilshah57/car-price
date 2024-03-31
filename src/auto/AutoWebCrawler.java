@@ -36,14 +36,14 @@ System.out.println();
             websiteUrl = websiteUrl.substring(0, websiteUrl.length() - 1);
         }
         // Step 2: Crawl the Website
-        System.out.println("Crawling website: " + websiteUrl);
+        System.out.println("Website crawling in process: " + websiteUrl);
         crawler.crawl(websiteUrl, "pages");
                 decorate(green + " Website crawled successfully!" +reset);
 
         // Step 3: Enter a word and Perform Operations
         while (true) {
             System.out.println();
-            decorateWithLine(" Enter a word (model name, year of production, feature) to perform operations (or type 'exit' to quit): ");
+            decorateWithLine("Enter a word (model name, year of production, feature) to perform operations (or type 'exit' to quit): ");
             String word = scanner.nextLine().trim();
 
             if (word.equalsIgnoreCase("exit")) {
@@ -60,6 +60,7 @@ System.out.println();
             Thread.sleep(2000);
 
             // Spell suggestion
+            System.out.println();
             System.out.println( skyBlue + "\nSpell Suggestions:" + reset);
             String userAcceptance = "";
             String suggestion = spellSuggestion.suggestWord(word);
@@ -74,6 +75,9 @@ System.out.println();
                 if (!userResponse.equalsIgnoreCase("no") && !userResponse.equalsIgnoreCase("yes")) {
                     System.out.println("Please enter either yes/no");
                     userResponse = scanner.nextLine().trim();
+                    if(userResponse.equalsIgnoreCase("yes")){
+                        word=suggestion;
+                    }
                 }
 
                 while (userResponse.equalsIgnoreCase("no")) {
@@ -98,7 +102,7 @@ System.out.println();
 
             // Frequency count
             System.out.println(skyBlue + "\nFrequency Count for word + " + word + ": " + reset);
-            freqCount.countFrequency("..//pages", word);
+            freqCount.countFrequency("pages", word);
             Thread.sleep(5000);
             // Inverted indexing
             System.out.println(skyBlue+ "\nInverted Indexing for word " + word + " : " +reset);
