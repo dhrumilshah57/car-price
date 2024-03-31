@@ -13,7 +13,9 @@ import org.jsoup.select.Elements;
 
 public class CarMpgScrapper {
 
-	public void scrapCarMpgData(String carName, int mileage) {
+	public void scrapCarMpgData(String carName, long mileage) {
+		String reset="\u001B[0m";
+		String yellow= "\u001B[33m";
 		try {
 			// URL for the car search
 			String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
@@ -47,7 +49,10 @@ public class CarMpgScrapper {
 
 
 			}
-
+			if (cars.isEmpty()) {
+				System.out.println(yellow + "No cars found with the specified mileage." + reset);
+				return; // Exit the method
+			}
 			// Sort the list of cars by price in ascending order (as string)
 			cars.sort((car1, car2) -> car2.getMpg().compareTo(car1.getMpg()));
 
@@ -57,7 +62,7 @@ public class CarMpgScrapper {
 			}
 		} catch (HttpStatusException e) {
 			if (e.getStatusCode() == 404) {
-				System.err.println("Error: The car model was not found.");
+				System.out.println(yellow + "Error: The car model was not found." + reset);
 			} else {
 				e.printStackTrace();
 			}

@@ -16,6 +16,7 @@ public class AutoWebCrawler {
         String green="\u001B[32m";
         String skyBlue="\u001B[36m";
         String reset="\u001B[0m";
+         String yellow= "\u001B[33m";
         Scanner scanner = new Scanner(System.in);
         WebCrawler crawler = new WebCrawler(15, "pages");
         SpellChecker spellChecker = new SpellChecker();
@@ -31,7 +32,16 @@ System.out.println();
         // Step 1: Take Website Input
         System.out.println("\nPlease enter a website URL to crawl:");
         String websiteUrl = scanner.nextLine();
-// Remove trailing slash if present
+        websiteUrl.replaceAll(" ","");
+        if (websiteUrl.equalsIgnoreCase("exit")) {
+            decorateWithLine(green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!" + reset);
+            return; // Exit the program
+        }
+        while(websiteUrl.isBlank()) {
+            System.out.println(yellow + "No website URL provided. Please enter a valid website URL or type 'exit' to quit." + reset);
+            websiteUrl = scanner.nextLine();
+        }
+        // Remove trailing slash if present
         if (websiteUrl.endsWith("/")) {
             websiteUrl = websiteUrl.substring(0, websiteUrl.length() - 1);
         }
@@ -43,7 +53,7 @@ System.out.println();
         // Step 3: Enter a word and Perform Operations
         while (true) {
             System.out.println();
-            decorateWithLine("Enter a word (model name, year of production, feature) to perform operations (or type 'exit' to quit): ");
+            decorateWithLine("Enter a car model name, year of production or feature of car to perform operations (or type 'exit' to quit): ");
             String word = scanner.nextLine().trim();
 
             if (word.equalsIgnoreCase("exit")) {
@@ -51,12 +61,12 @@ System.out.println();
                 break;
             }
             else if (!word.matches("[a-zA-Z0-9]+")) {
-    System.err.println("Error: Input cannot contain special characters or symbols.");
+    System.out.println(yellow + "Error: Input cannot contain special characters or symbols." + reset);
     Thread.sleep(2000);
     continue; // Restart the loop to prompt for a new input
 }
 System.out.println();
-            decorate( "Based on the word you entered, we can offer the following functions for you to explore and analyze:" );
+            decorateWithLine( "Based on the word you entered, we can offer the following functions for you to explore and analyze:" );
             Thread.sleep(2000);
 
             // Spell suggestion
@@ -65,14 +75,16 @@ System.out.println();
             String userAcceptance = "";
             String suggestion = spellSuggestion.suggestWord(word);
             if (suggestion.isEmpty()) {
-                System.err.println("No suggestions found for " + word + "'.");
+                System.out.println(yellow + "No suggestions found for " + word + "'." + reset);
+                decorate( green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!"+ reset);
+                break;
             } else {
                 System.out.println("Did you mean the word " + suggestion + " ?  (yes/no)");
                 String userResponse = scanner.nextLine().trim();
                 if (userResponse.equalsIgnoreCase("yes")) {
                    word=suggestion;
                 }
-                if (!userResponse.equalsIgnoreCase("no") && !userResponse.equalsIgnoreCase("yes")) {
+                while (!userResponse.equalsIgnoreCase("no") && !userResponse.equalsIgnoreCase("yes")) {
                     System.out.println("Please enter either yes/no");
                     userResponse = scanner.nextLine().trim();
                     if(userResponse.equalsIgnoreCase("yes")){
@@ -123,7 +135,7 @@ System.out.println();
                 if (scrapeChoice.equalsIgnoreCase("yes")) {
                     Scanner priceScanner = new Scanner(System.in);
                     System.out.print("Enter minimum mileage (mpg) of the car you want to scrap:");
-                    int minMpg = priceScanner.nextInt();
+                    long minMpg = priceScanner.nextLong();
 
                     System.out.println();
 
@@ -134,7 +146,7 @@ System.out.println();
                     System.out.print("Enter car model name to perform scrapping on  mileage: ");
                     String carNamePrice = priceScanner.nextLine();
                     System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
-                    int minMpg = priceScanner.nextInt();
+                    long minMpg = priceScanner.nextLong();
 
                     System.out.println();
 
@@ -144,14 +156,17 @@ System.out.println();
             }else {
                 System.out.println(skyBlue + "Would you like to perform scraping on mileage." + reset);
                 String mpgScrapeChoice = scanner.nextLine().trim();
-
+                if (!mpgScrapeChoice.equalsIgnoreCase("no") && !mpgScrapeChoice.equalsIgnoreCase("yes")) {
+                    System.out.println("Please enter either yes/no");
+                    mpgScrapeChoice = scanner.nextLine().trim();
+                }
                 if (mpgScrapeChoice.equalsIgnoreCase("yes")) {
                     // Code for scraping car prices
                     Scanner priceScanner = new Scanner(System.in);
                     System.out.print("Enter car model name to perform scrapping on mileage: ");
                     String carNamePrice = priceScanner.nextLine();
                     System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
-                    int minMpg = priceScanner.nextInt();
+                    long minMpg = priceScanner.nextLong();
 
                     System.out.println();
 
@@ -172,9 +187,9 @@ System.out.println();
 
 
                     System.out.print("Enter min. price of the car: ");
-                    int minPrice = priceScanner.nextInt();
+                    long minPrice = priceScanner.nextLong();
                     System.out.print("Enter max. price of the car: ");
-                    int maxPrice = priceScanner.nextInt();
+                    long maxPrice = priceScanner.nextLong();
                     System.out.println();
 
                     // Scrap car price data
@@ -184,27 +199,30 @@ System.out.println();
                     System.out.print("Enter car model name to perform scrapping: ");
                     String carNamePrice = priceScanner.nextLine();
                     System.out.print("Enter min. price of the car: ");
-                    int minPrice = priceScanner.nextInt();
+                    long minPrice = priceScanner.nextLong();
                     System.out.print("Enter max. price of the car: ");
-                    int maxPrice = priceScanner.nextInt();
+                    long maxPrice = priceScanner.nextLong();
                     System.out.println();
 
                     // Scrap car price data
                     priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
                 }
             }else {
-                System.out.println(skyBlue + "Would you like to perform scraping on price." + reset);
+                System.out.println(skyBlue + "Would you like to perform scraping on price ? (yes/no)" + reset);
                 String priceScrapeChoice = scanner.nextLine().trim();
-
+                if (!priceScrapeChoice.equalsIgnoreCase("no") && !priceScrapeChoice.equalsIgnoreCase("yes")) {
+                    System.out.println("Please enter either yes/no");
+                    priceScrapeChoice = scanner.nextLine().trim();
+                }
                 if (priceScrapeChoice.equalsIgnoreCase("yes")) {
                     // Code for scraping car prices
                     Scanner priceScanner = new Scanner(System.in);
                     System.out.print("Enter car model name to perform scrapping: ");
                     String carNamePrice = priceScanner.nextLine();
                     System.out.print("Enter min. price of the car: ");
-                    int minPrice = priceScanner.nextInt();
+                    long minPrice = priceScanner.nextLong();
                     System.out.print("Enter max. price of the car: ");
-                    int maxPrice = priceScanner.nextInt();
+                    long maxPrice = priceScanner.nextLong();
                     System.out.println();
 
                     // Scrap car price data

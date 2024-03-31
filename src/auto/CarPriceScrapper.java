@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -13,7 +14,24 @@ import org.jsoup.select.Elements;
 
 public class CarPriceScrapper {
 
-    public void scrapCarPriceData(String carName, int minPrice, int maxPrice) {
+    public void scrapCarPriceData(String carName, long minPrice, long maxPrice) {
+
+
+        String reset="\u001B[0m";
+        String yellow= "\u001B[33m";
+        Scanner scanner = new Scanner(System.in);
+        if (maxPrice > Integer.MAX_VALUE  ) {
+            System.out.println (yellow + "Max price value is too large. Please enter a smaller value."+ reset) ;
+            System.out.print("Enter max price value: ");
+            maxPrice = scanner.nextInt();
+        }
+
+        if (minPrice > Integer.MAX_VALUE  ) {
+            System.out.println (yellow + "Min price value is too large. Please enter a smaller value."+ reset) ;
+            System.out.print("Enter min price value: ");
+            minPrice = scanner.nextInt();
+        }
+
         try {
             // URL for the car search
             String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
@@ -47,7 +65,10 @@ public class CarPriceScrapper {
 
 
             }
-
+            if (cars.isEmpty()) {
+                System.out.println(yellow + "No cars found with the specified price range." + reset);
+                return; // Exit the method
+            }
             // Sort the list of cars by price in ascending order (as string)
             cars.sort((car1, car2) -> car1.getPrice().compareTo(car2.getPrice()));
 
@@ -57,7 +78,7 @@ public class CarPriceScrapper {
             }
         } catch (HttpStatusException e) {
             if (e.getStatusCode() == 404) {
-                System.err.println("Error: The car model was not found.");
+                System.out.println(yellow + "Error: The car model was not found." + reset);
             } else {
                 e.printStackTrace();
             }

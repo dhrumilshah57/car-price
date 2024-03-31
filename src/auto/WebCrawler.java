@@ -30,6 +30,16 @@ public class WebCrawler {
     }
 
     public void crawl(String startingUrl, String saveDir) throws IOException {
+        String reset="\u001B[0m";
+        String yellow= "\u001B[33m";
+        Scanner sc=new Scanner(System.in);
+        while (!UrlValidator.validate(startingUrl)) {
+System.out.println(startingUrl);
+            System.out.println(yellow + "Invalid URL: " + startingUrl + reset);
+            System.out.println("Please enter a correct url");
+startingUrl=sc.nextLine();
+System.out.println(startingUrl);
+        }
         File dir = new File(saveDir);
         if (!dir.exists()) {
             dir.mkdir();
@@ -125,6 +135,7 @@ public class WebCrawler {
                     String carNamePrice = priceScanner.nextLine();
 
                     System.out.print("Enter min. price: ");
+
                     int minPrice = priceScanner.nextInt();
                     System.out.print("Enter max. price: ");
                     int maxPrice = priceScanner.nextInt();
