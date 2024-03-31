@@ -69,42 +69,7 @@ System.out.println();
             decorateWithLine( "Based on the word you entered, we can offer the following functions for you to explore and analyze:" );
             Thread.sleep(2000);
 
-            // Spell suggestion
-
-            System.out.println( skyBlue + "\nSpell Suggestions:" + reset);
-            String userAcceptance = "";
-            String suggestion = spellSuggestion.suggestWord(word);
-            if (suggestion.isEmpty()) {
-                System.out.println(yellow + "No suggestions found for " + word + "'." + reset);
-                decorate( green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!"+ reset);
-                break;
-            } else {
-                System.out.println("Did you mean the word " + suggestion + " ?  (yes/no)");
-                String userResponse = scanner.nextLine().trim();
-                if (userResponse.equalsIgnoreCase("yes")) {
-                   word=suggestion;
-                }
-                while (!userResponse.equalsIgnoreCase("no") && !userResponse.equalsIgnoreCase("yes")) {
-                    System.out.println("Please enter either yes/no");
-                    userResponse = scanner.nextLine().trim();
-                    if(userResponse.equalsIgnoreCase("yes")){
-                        word=suggestion;
-                    }
-                }
-
-                while (userResponse.equalsIgnoreCase("no")) {
-                    System.out.println(
-                            "Enter a new word for the operations");
-                    word = scanner.nextLine().trim();
-
-                    System.out.println("Your new word is: " + word + ". Do you want to perform other operations on that word? (yes/no)");
-                    userResponse = scanner.nextLine().trim();
-                    if (userResponse.equalsIgnoreCase("yes")) {
-
-
-                    }
-                }
-            }
+           performSpellSuggestion(word);
             Thread.sleep(2000);
 
 
@@ -307,6 +272,50 @@ long maxPrice=0;
         }
     }
 
+
+    public static void performSpellSuggestion(String word) {
+        String skyBlue="\u001B[36m";
+        String reset="\u001B[0m";
+        SpellSuggestion spellSuggestion = new SpellSuggestion("pages");
+        String yellow= "\u001B[33m";
+        Scanner scanner = new Scanner(System.in);
+        // Spell suggestion logic
+        System.out.println(skyBlue + "\nSpell Suggestions:" + reset);
+        String suggestion = spellSuggestion.suggestWord(word);
+
+        if (suggestion.isEmpty()) {
+            System.out.println(yellow + "No suggestions found for this word." + reset);
+            System.out.println("Enter another word for suggestions (or type 'exit' to quit): ");
+            word = scanner.nextLine().trim();
+            if (word.equalsIgnoreCase("exit")) {
+                System.out.println("Exiting spell suggestion...");
+                return;
+            }
+            suggestion=word;
+        }
+
+        System.out.println("Did you mean the word " + suggestion + " ?  (yes/no)");
+        String userResponse = scanner.nextLine().trim();
+
+        if (userResponse.equalsIgnoreCase("yes")) {
+            word = suggestion;
+        } else if (!userResponse.equalsIgnoreCase("no")) {
+            System.out.println("Please enter either yes/no");
+            return; // Handle incorrect input
+        }
+
+        while (userResponse.equalsIgnoreCase("no")) {
+            System.out.println("Enter a new word for the operations");
+            word = scanner.nextLine().trim();
+            System.out.println("Your new word is: " + word + ". Do you want to perform other operations on that word? (yes/no)");
+            userResponse = scanner.nextLine().trim();
+            if(userResponse.equalsIgnoreCase("yes")){
+                performSpellSuggestion(word);
+            }
+        }
+
+
+    }
 
 
     public static void decorate(String message){
