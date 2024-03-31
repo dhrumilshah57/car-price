@@ -116,6 +116,53 @@ System.out.println();
 
             boolean isModelName = priceScrapper.checkIfModelName(word);
            ;
+            // Offer to scrap car mpg data based on the word
+            if (isModelName) {
+                System.out.println(skyBlue + "\nWould you like to scrape car mileage based on the model " + word + "? (yes/no)" + reset);
+                String scrapeChoice = scanner.nextLine().trim();
+                if (scrapeChoice.equalsIgnoreCase("yes")) {
+                    Scanner priceScanner = new Scanner(System.in);
+                    System.out.print("Enter minimum mileage (mpg) of the car you want to scrap:");
+                    int minMpg = priceScanner.nextInt();
+
+                    System.out.println();
+
+                    // Scrap car price data
+                    mpgScrapper.scrapCarMpgData(word,minMpg );
+                } else {
+                    Scanner priceScanner = new Scanner(System.in);
+                    System.out.print("Enter car model name to perform scrapping on  mileage: ");
+                    String carNamePrice = priceScanner.nextLine();
+                    System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
+                    int minMpg = priceScanner.nextInt();
+
+                    System.out.println();
+
+                    // Scrap car price data
+                    mpgScrapper.scrapCarMpgData(word,minMpg );
+                }
+            }else {
+                System.out.println(skyBlue + "Would you like to perform scraping on mileage." + reset);
+                String mpgScrapeChoice = scanner.nextLine().trim();
+
+                if (mpgScrapeChoice.equalsIgnoreCase("yes")) {
+                    // Code for scraping car prices
+                    Scanner priceScanner = new Scanner(System.in);
+                    System.out.print("Enter car model name to perform scrapping on mileage: ");
+                    String carNamePrice = priceScanner.nextLine();
+                    System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
+                    int minMpg = priceScanner.nextInt();
+
+                    System.out.println();
+
+                    // Scrap car price data
+                    mpgScrapper.scrapCarMpgData(word,minMpg );
+                } else {
+                    decorate( green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!"+ reset);
+                    break;
+                }
+            }
+
             // Offer to scrap car price data based on the word
             if (isModelName) {
                 System.out.println(skyBlue + "\nWould you like to scrape car prices based on the model " + word + "? (yes/no)" + reset);

@@ -19,12 +19,12 @@ public class CarMpgScrapper {
 			String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
 					"manufacturers=" + carName.replace(" ", "%20") + "&" : "") +
 					"mpg=over" + mileage ;
-			System.out.println(url);
+
 			// Connect to the website and get its HTML document
 			Document doc = Jsoup.connect(url).get();
 
 			// Select car elements from the HTML document
-			Elements carElements = doc.select("div.css-1b1a19r.e1qqueke0 > div.css-ai263y.e1qqueke1");
+			Elements carElements = doc.select("div.css-ai263y.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
 
 			// List to store scraped car objects
 			List<Car> cars = new ArrayList<>();
@@ -49,7 +49,7 @@ public class CarMpgScrapper {
 			}
 
 			// Sort the list of cars by price in ascending order (as string)
-			cars.sort((car1, car2) -> car1.getMpg().compareTo(car2.getMpg()));
+			cars.sort((car1, car2) -> car2.getMpg().compareTo(car1.getMpg()));
 
 			// Print the list of cars
 			for (Car car : cars) {

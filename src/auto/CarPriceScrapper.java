@@ -19,7 +19,7 @@ public class CarPriceScrapper {
             String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
                     "manufacturers=" + carName.replace(" ", "%20") + "&" : "") +
                     "pricerange=" + minPrice + "-" + maxPrice;
-System.out.println(url);
+
             // Connect to the website and get its HTML document
             Document doc = Jsoup.connect(url).get();
 
