@@ -39,7 +39,7 @@ public class WebCrawler {
             String url = urlsToVisit.poll();
             if (!visitedUrls.contains(url)) {
                 visitedUrls.add(url);
-                System.out.println("Visiting: " + url);
+                System.out.println("Visiting the page : " + url);
                 try {
                     String links = HTMLParser.parse(url, saveDir);
                     for (String nextUrl : links.split(" ")) {
@@ -118,10 +118,12 @@ public class WebCrawler {
                     break;
 
                 case 2:
+
                 	Scanner priceScanner = new Scanner(System.in);
 
                 	System.out.print("Enter car name: ");
                     String carNamePrice = priceScanner.nextLine();
+
                     System.out.print("Enter min. price: ");
                     int minPrice = priceScanner.nextInt();
                     System.out.print("Enter max. price: ");
@@ -151,19 +153,15 @@ public class WebCrawler {
                         wordFreqMap.put(carName, 1);
                     }
 
-            		// Prompt the user to enter the year of the cars to scrape
-            		System.out.print("Enter the year of the cars to scrape: ");
-            		int year = carScanner.nextInt();
 
             		// Prompt the user to enter the mileage range to sort by
-            		System.out.print("Enter the minimum mileage (mpg): ");
+            		System.out.print("Enter the minimum mileage (mpg) of the car you want to scrap: ");
             		int minMpg = carScanner.nextInt();
-            		System.out.print("Enter the maximum mileage (mpg): ");
-            		int maxMpg = carScanner.nextInt();
+
             		System.out.println();
 
             		// Scrape the car data and print the sorted results
-            		carScrapper.scrapMileage(carName, year, minMpg, maxMpg);
+            		carScrapper.scrapCarMpgData(carName, minMpg);
                     continueRunning = false;
 
                     break;

@@ -65,7 +65,7 @@ public class FrequencyCount {
         System.out.println("Total frequency count for the keyword '" + keyword + "': " + totalFrequency);
 
         // To print the web pages and their frequencies based on keyword matches
-        System.out.println("\nWeb pages and their frequencies based on keyword matches: \n");
+        System.out.println("\nWeb pages and their frequencies based on keyword matches: ");
         boolean wordFound = false; // Flag to check if the word is found in any page
         for (File file : listOfFiles) {
             // Checker to check if the file is in .txt format

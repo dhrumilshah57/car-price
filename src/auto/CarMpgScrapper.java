@@ -1,105 +1,115 @@
 package auto;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
-
 public class CarMpgScrapper {
 
-	// A class to represent a car
-	private static class Car {
-		private final String model;
-		private final int mpg;
-		private final int year;
+	public void scrapCarMpgData(String carName, int mileage) {
+		try {
+			// URL for the car search
+			String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
+					"manufacturers=" + carName.replace(" ", "%20") + "&" : "") +
+					"mpg=over" + mileage ;
+			System.out.println(url);
+			// Connect to the website and get its HTML document
+			Document doc = Jsoup.connect(url).get();
 
-		public Car(String model, int mpg, int year) {
-			this.model = model;
-			this.mpg = mpg;
+			// Select car elements from the HTML document
+			Elements carElements = doc.select("div.css-11diq1x.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
+
+			// List to store scraped car objects
+			List<Car> cars = new ArrayList<>();
+
+			// Loop through each car element and extract relevant information
+			for (Element carElement : carElements) {
+
+				// Extract car name
+				String name = carElement.select("a.css-z66djy.ewtqiv30").text();
+
+				String year =  carElement.select("a.css-z66djy.ewtqiv30").text().split(" ")[0];
+				String price = carElement.select("div.css-15j21fj.e19qstch15 > div.css-n59ln1.e181er9y2> div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
+
+
+				String mpg = carElement.select("div.css-14q4cew.e19qstch18 > div.css-n59ln1.e181er9y2  > div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
+
+
+				cars.add(new Car(name, year, price, mpg)); // Add car to the list
+
+
+
+			}
+
+			// Sort the list of cars by price in ascending order (as string)
+			cars.sort((car1, car2) -> car1.getMpg().compareTo(car2.getMpg()));
+
+			// Print the list of cars
+			for (Car car : cars) {
+				System.out.println( car.toString());
+			}
+		} catch (HttpStatusException e) {
+			if (e.getStatusCode() == 404) {
+				System.err.println("Error: The car model was not found.");
+			} else {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	// Method to check if the word corresponds to a model name
+	public boolean checkIfModelName(String word) {
+		try {
+
+			String url = "https://www.kbb.com/car-finder";
+			Document doc = Jsoup.connect(url).get();
+			Elements labelElements = doc.select("#manufacturers-content > div > div > label");
+
+// Extract model names from the label elements and check if the input word matches any of them
+			for (Element labelElement : labelElements) {
+				String modelName = labelElement.select(".label-container").text().trim().toLowerCase();
+
+				if(modelName.equalsIgnoreCase(word)){     return true;}
+			}
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			return false;
+			// Handle connection or parsing errors
+			// You may choose to return false or throw the exception here
+		}
+
+		return false;
+	}
+
+	static class Car {
+		String name;
+		String year;
+		String price;
+		String mpg;
+
+		public Car(String name, String year, String price, String mpg) {
+			this.name = name;
 			this.year = year;
+			this.price = price;
+			this.mpg = mpg;
 		}
 
-		public String getModel() {
-			return model;
-		}
-
-		public int getMpg() {
+		public String getMpg() {
 			return mpg;
-		}
-
-		public int getYear() {
-			return year;
 		}
 
 		@Override
 		public String toString() {
-			return model + " || " + mpg + " mpg";
-		}
-	}
-
-	public static void scrapMileage(String url, int year, int minMpg, int maxMpg) throws IOException {
-		// Connect to the website and retrieve the HTML document
-		String urlWithName = "https://mpgof.com/" + url;
-		
-		Document doc = Jsoup.connect(urlWithName).get();
-
-		// Find all the tables with class "table"
-		Elements tables = doc.select("table.table");
-
-		// Create a list to store the car data
-		List<Car> cars = new ArrayList<>();
-
-		// Iterate through each table and extract the car data
-		for (Element table : tables) {
-			// Find the caption of the table to get the year
-			String caption = table.selectFirst("caption").text();
-			int tableYear = Integer.parseInt(caption.replaceAll("[^0-9]+", ""));
-
-			// Check if the year matches the user input
-			if (tableYear == year) {
-				// Find all the rows in the table
-				Elements rows = table.select("tbody tr");
-
-				// Iterate through each row and extract the car data
-				for (Element row : rows) {
-					String model = row.selectFirst("td:first-child").text();
-
-					// Check if the model name starts with the year entered by the user
-					if (model.startsWith(Integer.toString(year))) {
-						String mpg = row.selectFirst("td:last-child").text();
-						String[] mpgValues = mpg.split(" to ");
-
-						// Add the car data to the list if it falls within the specified mileage range
-						int maxMpgValue = Integer.parseInt(mpgValues[1]);
-						int minMpgValue = Integer.parseInt(mpgValues[0]);
-						if ((maxMpgValue >= minMpg && maxMpgValue <= maxMpg) && (minMpgValue <= maxMpg && minMpgValue >= minMpg)) {
-							cars.add(new Car(model, maxMpgValue, year));
-						}
-					}
-				}
-
-			}
-		}
-		
-		// Sort the cars by mileage (in descending order) using a custom comparator
-		Collections.sort(cars, new Comparator<Car>() {
-			@Override
-			public int compare(Car c1, Car c2) {
-				return c2.getMpg() - c1.getMpg();
-			}
-		});
-
-		// Print the sorted list of cars
-		System.out.println("List of cars sorted by mileage (in descending order):");
-		for (Car car : cars) {
-			System.out.println(car);
+			return "Name of the Model: " + name + " Year: " + year + ", Price: " + price + ", MPG: " + mpg;
 		}
 	}
 }
