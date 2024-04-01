@@ -34,7 +34,7 @@ public class WebCrawler {
         String yellow= "\u001B[33m";
         Scanner sc=new Scanner(System.in);
         while (!UrlValidator.validate(startingUrl)) {
-System.out.println(startingUrl);
+
             System.out.println(yellow + "Invalid URL: " + startingUrl + reset);
             System.out.println("Please enter a correct url");
 startingUrl=sc.nextLine();

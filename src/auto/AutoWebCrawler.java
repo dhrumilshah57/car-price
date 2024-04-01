@@ -23,6 +23,7 @@ public class AutoWebCrawler {
         FrequencyCount freqCount = new FrequencyCount();
         InvertedIndex index = new InvertedIndex();
         PageRanking pageRanking = new PageRanking();
+        SearchFrequencyTracker frequencyTracker = new SearchFrequencyTracker();
         SpellSuggestion spellSuggestion = new SpellSuggestion("pages");
         CarPriceScrapper priceScrapper = new CarPriceScrapper();
         CarMpgScrapper mpgScrapper = new CarMpgScrapper();
@@ -37,8 +38,8 @@ System.out.println();
             decorateWithLine(green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!" + reset);
             return; // Exit the program
         }
-        while(websiteUrl.isBlank()) {
-            System.out.println(yellow + "No website URL provided. Please enter a valid website URL or type 'exit' to quit." + reset);
+        while(websiteUrl.isBlank() ||  !websiteUrl.matches("^(http|https)://.*$")) {
+            System.out.println(yellow + "Please enter a valid website URL or type 'exit' to quit." + reset);
             websiteUrl = scanner.nextLine();
         }
         // Remove trailing slash if present
@@ -81,6 +82,15 @@ System.out.println();
             Thread.sleep(3000);
 
 
+            // Increment the search frequency for the word
+            frequencyTracker.incrementSearchFrequency(word);
+
+// Retrieve and print the search frequency of the word
+
+            System.out.println(skyBlue + "\nSearch Frequency for your word :"+ reset);
+            int wordFrequency = frequencyTracker.getSearchFrequency(word);
+            System.out.println("Search frequency of \"" + word + "\" in the website: " + wordFrequency);
+            Thread.sleep(3000);
             // Frequency count
             System.out.println(skyBlue + "\nFrequency Count for word + " + word + ": " + reset);
             freqCount.countFrequency("pages", word);
@@ -102,6 +112,10 @@ System.out.println();
             System.out.println(skyBlue + "Would you like to scrape cars based on mileage or price? (mileage/price)" + reset);
             String scrapeOption = scanner.nextLine().trim();
 
+           while(!scrapeOption.equalsIgnoreCase("mileage") && !scrapeOption.equalsIgnoreCase("price") ) {
+               System.out.println(yellow + "Invalid option. Please enter either 'mileage' or 'price'." + reset);
+               scrapeOption = scanner.nextLine().trim();
+           }
     if (scrapeOption.equalsIgnoreCase("mileage")) {
         if (isModelName) {
             System.out.println(skyBlue + "\nWould you like to search cars mileage based on the model " + word + "? (yes/no)" + reset);
@@ -261,9 +275,6 @@ System.out.println();
                 priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
 
         }
-    } else {
-        System.out.println(yellow + "Invalid option. Please enter either 'mileage' or 'price'." + reset);
-
     }
 }
             // Offer to scrap car mpg data based on the word
@@ -276,6 +287,9 @@ System.out.println();
 
 
     public static String performSpellSuggestion(String word) {
+        // Convert the word to lowercase
+        word = word.toLowerCase();
+
         String skyBlue="\u001B[36m";
         String reset="\u001B[0m";
         SpellSuggestion spellSuggestion = new SpellSuggestion("pages");
