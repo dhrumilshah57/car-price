@@ -43,6 +43,9 @@ public class CarPriceScrapper {
 
             // Select car elements from the HTML document
             Elements carElements = doc.select("div.css-11diq1x.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
+// Select car elements from the HTML document from the second div
+            Elements carElementsSecondDiv = doc.select("div.css-1b1a19r.e1qqueke0 > div.css-fyuinx.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
+            carElements.addAll(carElementsSecondDiv);
 
             // List to store scraped car objects
             List<Car> cars = new ArrayList<>();
