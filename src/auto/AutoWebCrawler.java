@@ -297,11 +297,13 @@ System.out.println();
             System.out.println(yellow + "No suggestions found for this word." + reset);
             System.out.println("Enter another word for suggestions (or type 'exit' to quit): ");
             word = scanner.nextLine().trim();
-            word = performSpellSuggestion(word);
             if (word == null || word.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting spell suggestion...");
                 return null;
             }
+            suggestion = performSpellSuggestion(word);
+            return suggestion;
+
 
         }
 
