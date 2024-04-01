@@ -98,178 +98,188 @@ System.out.println();
 
             boolean isModelName = priceScrapper.checkIfModelName(word);
             System.out.println();
+            while (true) {
             System.out.println(skyBlue + "Would you like to scrape cars based on mileage or price? (mileage/price)" + reset);
             String scrapeOption = scanner.nextLine().trim();
 
-            if (scrapeOption.equalsIgnoreCase("mileage")) {
-                if (isModelName) {
-                    System.out.println(skyBlue + "\nWould you like to search cars mileage based on the model " + word + "? (yes/no)" + reset);
-                    String scrapeChoice = scanner.nextLine().trim();
-                    if (scrapeChoice.equalsIgnoreCase("yes")) {
-                        Scanner priceScanner = new Scanner(System.in);
-                        System.out.print("Enter minimum mileage (mpg) of the car you want to scrap:");
-                        long minMpg = priceScanner.nextLong();
-
-                        System.out.println();
-
-                        // Scrap car price data
-                        mpgScrapper.scrapCarMpgData(word,minMpg );
-                    } else {
-                        Scanner priceScanner = new Scanner(System.in);
-                        System.out.print("Enter car model name to perform scrapping on  mileage: ");
-                        String carNamePrice = priceScanner.nextLine();
-                        System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
-                        long minMpg = priceScanner.nextLong();
-
-                        System.out.println();
-
-                        // Scrap car price data
-                        mpgScrapper.scrapCarMpgData(word,minMpg );
-                    }
-                }else {
-                    System.out.println(skyBlue + "Would you like to perform scraping on mileage." + reset);
-                    String mpgScrapeChoice = scanner.nextLine().trim();
-                    if (!mpgScrapeChoice.equalsIgnoreCase("no") && !mpgScrapeChoice.equalsIgnoreCase("yes")) {
-                        System.out.println("Please enter either yes/no");
-                        mpgScrapeChoice = scanner.nextLine().trim();
-                    }
-                    if (mpgScrapeChoice.equalsIgnoreCase("yes")) {
-                        // Code for scraping car prices
-                        Scanner priceScanner = new Scanner(System.in);
-                        System.out.print("Enter car model name to perform scrapping on mileage: ");
-                        String carNamePrice = priceScanner.nextLine();
-                        System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
-                        long minMpg = priceScanner.nextLong();
-
-                        System.out.println();
-
-                        // Scrap car price data
-                        mpgScrapper.scrapCarMpgData(word,minMpg );
-                    } else {
-                        decorate( green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!"+ reset);
-                        break;
-                    }
-                }
-            } else if (scrapeOption.equalsIgnoreCase("price")) {
-                if (isModelName) {
-                    System.out.println(skyBlue + "\nWould you like to scrape car prices based on the model " + word + "? (yes/no)" + reset);
-                    String scrapeChoice = scanner.nextLine().trim();
-                    if (scrapeChoice.equalsIgnoreCase("yes")) {
-                        Scanner priceScanner = new Scanner(System.in);
-
-long minPrice=0;
-long maxPrice=0;
-                        while (true) {
-                            try {
-                                System.out.print("Enter min. price of the car: ");
-                                minPrice = priceScanner.nextLong();
-                                break; // Break the loop if input is valid
-                            } catch (InputMismatchException e) {
-                                System.out.println(yellow+ "Invalid input. Please enter a valid numeric value for the price."+ reset);
-                                priceScanner.nextLine(); // Consume the invalid input
-                            }
-                        }
-
-                        while (true) {
-                            try {
-                                System.out.print("Enter max. price of the car: ");
-                                maxPrice = priceScanner.nextLong();
-                                break; // Break the loop if input is valid
-                            } catch (InputMismatchException e) {
-                                System.out.println(yellow+ "Invalid input. Please enter a valid numeric value for the price."+ reset);
-                                priceScanner.nextLine(); // Consume the invalid input
-                            }
-                        }
-                        System.out.println();
-
-                        // Scrap car price data
-                        priceScrapper.scrapCarPriceData(word, minPrice, maxPrice);
-                    } else {
-                        Scanner priceScanner = new Scanner(System.in);
-                        System.out.print("Enter car model name to perform scrapping: ");
-                        String carNamePrice = priceScanner.nextLine();
-                        long minPrice=0;
-                        long maxPrice=0;
-                        while (true) {
-                            try {
-                                System.out.print("Enter min. price of the car: ");
-                                minPrice = priceScanner.nextLong();
-                                break; // Break the loop if input is valid
-                            } catch (InputMismatchException e) {
-                                System.out.println(yellow+ "Invalid input. Please enter a valid numeric value for the price."+ reset);
-                                priceScanner.nextLine(); // Consume the invalid input
-                            }
-                        }
-
-                        while (true) {
-                            try {
-                                System.out.print("Enter max. price of the car: ");
-                                maxPrice = priceScanner.nextLong();
-                                break; // Break the loop if input is valid
-                            } catch (InputMismatchException e) {
-                                System.out.println(yellow+ "Invalid input. Please enter a valid numeric value for the price."+ reset);
-                                priceScanner.nextLine(); // Consume the invalid input
-                            }
-                        }
-                        System.out.println();
-
-                        // Scrap car price data
-                        priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
-                    }
-                }else {
-                    System.out.println(skyBlue + "Would you like to perform scraping on price ? (yes/no)" + reset);
-                    String priceScrapeChoice = scanner.nextLine().trim();
-                    if (!priceScrapeChoice.equalsIgnoreCase("no") && !priceScrapeChoice.equalsIgnoreCase("yes")) {
-                        System.out.println("Please enter either yes/no");
-                        priceScrapeChoice = scanner.nextLine().trim();
-                    }
-                    if (priceScrapeChoice.equalsIgnoreCase("yes")) {
-                        // Code for scraping car prices
-                        Scanner priceScanner = new Scanner(System.in);
-                        System.out.print("Enter car model name to perform scrapping: ");
-                        String carNamePrice = priceScanner.nextLine();
-                        long minPrice=0;
-                        long maxPrice=0;
-                        while (true) {
-                            try {
-                                System.out.print("Enter min. price of the car: ");
-                                minPrice = priceScanner.nextLong();
-                                break; // Break the loop if input is valid
-                            } catch (InputMismatchException e) {
-                                System.out.println(yellow+ "Invalid input. Please enter a valid numeric value for the price."+ reset);
-                                priceScanner.nextLine(); // Consume the invalid input
-                            }
-                        }
-
-                        while (true) {
-                            try {
-                                System.out.print("Enter max. price of the car: ");
-                                maxPrice = priceScanner.nextLong();
-                                break; // Break the loop if input is valid
-                            } catch (InputMismatchException e) {
-                                System.out.println(yellow+ "Invalid input. Please enter a valid numeric value for the price."+ reset);
-                                priceScanner.nextLine(); // Consume the invalid input
-                            }
-                        }
-                        System.out.println();
-
-                        // Scrap car price data
-                        priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
-                    } else {
-                        decorate( green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!"+ reset);
-                        break;
-                    }
-                }
-            } else {
-                System.out.println(yellow + "Invalid option. Please enter either 'mileage' or 'price'." + reset);
-                continue;
+    if (scrapeOption.equalsIgnoreCase("mileage")) {
+        if (isModelName) {
+            System.out.println(skyBlue + "\nWould you like to search cars mileage based on the model " + word + "? (yes/no)" + reset);
+            String scrapeChoice = scanner.nextLine().trim();
+            if (!scrapeChoice.equalsIgnoreCase("no") && !scrapeChoice.equalsIgnoreCase("yes")) {
+                System.out.println("Please enter either yes/no");
+                scrapeChoice = scanner.nextLine().trim();
             }
+            if (scrapeChoice.equalsIgnoreCase("yes")) {
+                Scanner priceScanner = new Scanner(System.in);
+                System.out.print("Enter minimum mileage (mpg) of the car you want to scrap:");
+                long minMpg = priceScanner.nextLong();
+
+                System.out.println();
+
+                // Scrap car price data
+                mpgScrapper.scrapCarMpgData(word, minMpg);
+            } else if(scrapeChoice.equalsIgnoreCase("no")) {
+                Scanner priceScanner = new Scanner(System.in);
+                System.out.print("Enter car model name to perform scrapping on  mileage: ");
+                String carNamePrice = priceScanner.nextLine();
+                System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
+                long minMpg = priceScanner.nextLong();
+
+                System.out.println();
+
+                // Scrap car price data
+                mpgScrapper.scrapCarMpgData(word, minMpg);
+            }
+        } else {
+            System.out.println(skyBlue + "Would you like to perform scraping on mileage." + reset);
+            String mpgScrapeChoice = scanner.nextLine().trim();
+            if (!mpgScrapeChoice.equalsIgnoreCase("no") && !mpgScrapeChoice.equalsIgnoreCase("yes")) {
+                System.out.println("Please enter either yes/no");
+                mpgScrapeChoice = scanner.nextLine().trim();
+            }
+            if (mpgScrapeChoice.equalsIgnoreCase("yes")) {
+                // Code for scraping car prices
+                Scanner priceScanner = new Scanner(System.in);
+                System.out.print("Enter car model name to perform scrapping on mileage: ");
+                String carNamePrice = priceScanner.nextLine();
+                System.out.print("Enter minimum mileage (mpg) of the car you want to scrap: ");
+                long minMpg = priceScanner.nextLong();
+
+                System.out.println();
+
+                // Scrap car price data
+                mpgScrapper.scrapCarMpgData(word, minMpg);
+            } else {
+                decorate(green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!" + reset);
+                break;
+            }
+        }
+    } else if (scrapeOption.equalsIgnoreCase("price")) {
+        if (isModelName) {
+            System.out.println(skyBlue + "\nWould you like to scrape car prices based on the model " + word + "? (yes/no)" + reset);
+            String scrapeChoice = scanner.nextLine().trim();
+            if (!scrapeChoice.equalsIgnoreCase("no") && !scrapeChoice.equalsIgnoreCase("yes")) {
+                System.out.println("Please enter either yes/no");
+                scrapeChoice = scanner.nextLine().trim();
+            }
+            if (scrapeChoice.equalsIgnoreCase("yes")) {
+                Scanner priceScanner = new Scanner(System.in);
+
+                long minPrice = 0;
+                long maxPrice = 0;
+                while (true) {
+                    try {
+                        System.out.print("Enter min. price of the car: ");
+                        minPrice = priceScanner.nextLong();
+                        break; // Break the loop if input is valid
+                    } catch (InputMismatchException e) {
+                        System.out.println(yellow + "Invalid input. Please enter a valid numeric value for the price." + reset);
+                        priceScanner.nextLine(); // Consume the invalid input
+                    }
+                }
+
+                while (true) {
+                    try {
+                        System.out.print("Enter max. price of the car: ");
+                        maxPrice = priceScanner.nextLong();
+                        break; // Break the loop if input is valid
+                    } catch (InputMismatchException e) {
+                        System.out.println(yellow + "Invalid input. Please enter a valid numeric value for the price." + reset);
+                        priceScanner.nextLine(); // Consume the invalid input
+                    }
+                }
+                System.out.println();
+
+                // Scrap car price data
+                priceScrapper.scrapCarPriceData(word, minPrice, maxPrice);
+            } else if(scrapeChoice.equalsIgnoreCase("no")) {
+                Scanner priceScanner = new Scanner(System.in);
+                System.out.print("Enter car model name to perform scrapping: ");
+                String carNamePrice = priceScanner.nextLine();
+                long minPrice = 0;
+                long maxPrice = 0;
+                while (true) {
+                    try {
+                        System.out.print("Enter min. price of the car: ");
+                        minPrice = priceScanner.nextLong();
+                        break; // Break the loop if input is valid
+                    } catch (InputMismatchException e) {
+                        System.out.println(yellow + "Invalid input. Please enter a valid numeric value for the price." + reset);
+                        priceScanner.nextLine(); // Consume the invalid input
+                    }
+                }
+
+                while (true) {
+                    try {
+                        System.out.print("Enter max. price of the car: ");
+                        maxPrice = priceScanner.nextLong();
+                        break; // Break the loop if input is valid
+                    } catch (InputMismatchException e) {
+                        System.out.println(yellow + "Invalid input. Please enter a valid numeric value for the price." + reset);
+                        priceScanner.nextLine(); // Consume the invalid input
+                    }
+                }
+                System.out.println();
+
+                // Scrap car price data
+                priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
+            }
+        } else {
+            System.out.println(skyBlue + "Would you like to perform scraping on price ? (yes/no)" + reset);
+            String priceScrapeChoice = scanner.nextLine().trim();
+            if (!priceScrapeChoice.equalsIgnoreCase("no") && !priceScrapeChoice.equalsIgnoreCase("yes")) {
+                System.out.println("Please enter either yes/no");
+                priceScrapeChoice = scanner.nextLine().trim();
+            }
+            if (priceScrapeChoice.equalsIgnoreCase("yes")) {
+                // Code for scraping car prices
+                Scanner priceScanner = new Scanner(System.in);
+                System.out.print("Enter car model name to perform scrapping: ");
+                String carNamePrice = priceScanner.nextLine();
+                long minPrice = 0;
+                long maxPrice = 0;
+                while (true) {
+                    try {
+                        System.out.print("Enter min. price of the car: ");
+                        minPrice = priceScanner.nextLong();
+                        break; // Break the loop if input is valid
+                    } catch (InputMismatchException e) {
+                        System.out.println(yellow + "Invalid input. Please enter a valid numeric value for the price." + reset);
+                        priceScanner.nextLine(); // Consume the invalid input
+                    }
+                }
+
+                while (true) {
+                    try {
+                        System.out.print("Enter max. price of the car: ");
+                        maxPrice = priceScanner.nextLong();
+                        break; // Break the loop if input is valid
+                    } catch (InputMismatchException e) {
+                        System.out.println(yellow + "Invalid input. Please enter a valid numeric value for the price." + reset);
+                        priceScanner.nextLine(); // Consume the invalid input
+                    }
+                }
+                System.out.println();
+
+                // Scrap car price data
+                priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
+            } else {
+                decorate(green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!" + reset);
+                break;
+            }
+        }
+    } else {
+        System.out.println(yellow + "Invalid option. Please enter either 'mileage' or 'price'." + reset);
+    }
+    }
+}
             // Offer to scrap car mpg data based on the word
 
 
             // Offer to scrap car price data based on the word
 
-        }
+
     }
 
 
@@ -287,8 +297,8 @@ long maxPrice=0;
             System.out.println(yellow + "No suggestions found for this word." + reset);
             System.out.println("Enter another word for suggestions (or type 'exit' to quit): ");
             word = scanner.nextLine().trim();
-            word=performSpellSuggestion(word);
-            if (word.equalsIgnoreCase("exit")) {
+            word = performSpellSuggestion(word);
+            if (word == null || word.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting spell suggestion...");
                 return null;
             }
@@ -299,7 +309,6 @@ long maxPrice=0;
         String userResponse = scanner.nextLine().trim();
 
         if (userResponse.equalsIgnoreCase("yes")) {
-
             return suggestion;
         } else if (!userResponse.equalsIgnoreCase("no")) {
             System.out.println("Please enter either yes/no");
@@ -312,12 +321,13 @@ long maxPrice=0;
             System.out.println("Your new word is: " + word + ". Do you want to perform other operations on that word? (yes/no)");
             userResponse = scanner.nextLine().trim();
             if(userResponse.equalsIgnoreCase("yes")){
-                performSpellSuggestion(word);
+                return performSpellSuggestion(word); // Return the result of the recursive call
             }
         }
 
-return word;
+        return word;
     }
+
 
 
     public static void decorate(String message){
