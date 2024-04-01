@@ -173,7 +173,7 @@ public class SpellSuggestion {
 	}
 	
 	public static void main(String[] args) {
-		SpellSuggestion spellChecker = new SpellSuggestion("/Users/meghpatel/eclipse-workspace/Automobile_pricing/pages/");
+		SpellSuggestion spellChecker = new SpellSuggestion("..//pages");
         String word = "mstake";
         String suggestion = spellChecker.suggestWord(word);
         if (suggestion.isEmpty()) {

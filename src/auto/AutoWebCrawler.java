@@ -132,7 +132,7 @@ System.out.println();
                 mpgScrapper.scrapCarMpgData(word, minMpg);
             }
         } else {
-            System.out.println(skyBlue + "Would you like to perform scraping on mileage." + reset);
+            System.out.println(skyBlue + "Would you like to perform scraping on mileage ? (yes/no)" + reset);
             String mpgScrapeChoice = scanner.nextLine().trim();
             if (!mpgScrapeChoice.equalsIgnoreCase("no") && !mpgScrapeChoice.equalsIgnoreCase("yes")) {
                 System.out.println("Please enter either yes/no");
