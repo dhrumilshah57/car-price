@@ -31,9 +31,14 @@ public class WebCrawler {
         String yellow = "\u001B[33m";
         Scanner sc = new Scanner(System.in);
 
+        // Check if the directory containing the crawled pages is already populated
+        File pagesDirectory = new File(saveDir);
+        if (pagesDirectory.exists() && pagesDirectory.isDirectory() && pagesDirectory.list().length > 0) {
+            System.out.println("Website is already crawled!");
+            return;
+        }
 
         while (!UrlValidator.validate(startingUrl)) {
-
             System.out.println(yellow + "Invalid URL: " + startingUrl + reset);
             System.out.println("Please enter a correct url");
             startingUrl = sc.nextLine();
@@ -65,6 +70,7 @@ public class WebCrawler {
         }
         System.out.println("Website is crawled!");
     }
+
 
     public static void main(String[] args) throws IOException {
         int maxUrlsToVisit = 15;
