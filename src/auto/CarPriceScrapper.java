@@ -1,6 +1,9 @@
 package auto;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,9 +67,8 @@ public class CarPriceScrapper {
 
 
                     String mpg = carElement.select("div.css-14q4cew.e19qstch18 > div.css-n59ln1.e181er9y2  > div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
-
-
-                    cars.add(new Car(name, year, price, mpg)); // Add car to the list
+                    String carUrl = "https://www.kbb.com"+carElement.select("a.css-z66djy.ewtqiv30").attr("href");
+                    cars.add(new Car(name, year, price, mpg, carUrl)); // Add car to the list
 
 
                 }
@@ -99,8 +101,8 @@ public class CarPriceScrapper {
 
                     String mpg = carElement.select("div.mileage").text();
 
-
-                    cars.add(new Car(name, year, price, mpg)); // Add car to the list
+                    String carUrl = "https://www.cars.com"+carElement.select("a.vehicle-card-link > h2").attr("href");
+                    cars.add(new Car(name, year, price, mpg,carUrl)); // Add car to the list
 
 
                 }
@@ -112,6 +114,9 @@ public class CarPriceScrapper {
             }
             // Sort the list of cars by price in ascending order (as string)
             cars.sort((car1, car2) -> car1.getPrice().compareTo(car2.getPrice()));
+
+            // Write the data to a CSV file
+            writeDataToCSV(cars);
 
             // Print the list of cars
             for (Car car : cars) {
@@ -181,22 +186,69 @@ return false;
 
     }
 
+    // Method to write the data to a CSV file
+    private void writeDataToCSV(List<Car> cars) {
+        String csvFile = "car_data.csv";
+        try (FileWriter writer = new FileWriter(csvFile,true)) {
+
+            // Get current date and time
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = now.format(formatter);
+
+            // Write date and time as the first row
+            writer.append("\n");
+            writer.append("Date : " + formattedDateTime + "\n");
+            // Write CSV header
+            writer.append("Name,Year,Price,MPG,URL\n");
+
+            // Write car data
+            for (Car car : cars) {
+                writer.append(String.join(",", car.getName(), car.getYear(), car.getPrice(), car.getMpg(), car.getCarUrl()));
+                writer.append("\n");
+            }
+            System.out.println("CSV file has been created successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     static class Car {
         String name;
         String year;
         String price;
         String mpg;
+
+        String carUrl;
         String skyBlue="\u001B[36m";
         String reset="\u001B[0m";
-        public Car(String name, String year, String price, String mpg) {
+        public Car(String name, String year, String price, String mpg, String carUrl) {
             this.name = name;
             this.year = year;
             this.price = price;
             this.mpg = mpg;
+            this.carUrl=carUrl;
         }
 
         public String getPrice() {
-            return price;
+            return price.replace(",", "");
+        }
+
+
+        public String getName() {
+            return name;
+        }
+
+        public String getYear() {
+            return year;
+        }
+
+        public String getMpg() {
+            return mpg.replace(",", "");
+        }
+
+        public String getCarUrl() {
+            return carUrl;
         }
 
         @Override
@@ -204,7 +256,8 @@ return false;
             return skyBlue + "Name of the Model: " + reset + name + " " +
                     skyBlue + "Year: " + reset + year + " " +
                     skyBlue + ", Price: " + reset + price + " " +
-                    skyBlue + ", MPG: " + reset + mpg + " ";
+                    skyBlue + ", MPG: " + reset + mpg + " " +
+                    skyBlue + ", Car Url: " + reset + carUrl + " ";
         }
 
     }
