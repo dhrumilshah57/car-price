@@ -48,21 +48,21 @@ System.out.println();
         }
         // Step 2: Crawl the Website
         System.out.println("Website crawling in process: " + websiteUrl);
-        crawler.crawl(websiteUrl, "pages");
+        crawler.crawl(websiteUrl);
                 decorate(green + " Website crawled successfully!" +reset);
 
         // Step 3: Enter a word and Perform Operations
         while (true) {
             System.out.println();
-            decorateWithLine("Enter a car model name, year of production or feature of car to perform operations (or type 'exit' to quit): ");
+            decorateWithLine("Enter a car model name to perform operations (or type 'exit' to quit): ");
             String word = scanner.nextLine().trim();
 
             if (word.equalsIgnoreCase("exit")) {
                 decorate( green + "Thank you for using the Automated Web Crawler and Analysis Tool. Goodbye!" + reset);
                 break;
             }
-            else if (!word.matches("[a-zA-Z0-9]+")) {
-    System.out.println(yellow + "Error: Input cannot contain special characters or symbols." + reset);
+            else if (!word.matches("[a-zA-Z\\s]+")) {
+    System.out.println(yellow + "Error: Input cannot contain  numbers, or special characters." + reset);
     Thread.sleep(2000);
     continue; // Restart the loop to prompt for a new input
 }
@@ -106,8 +106,7 @@ System.out.println();
             Thread.sleep(2000);
 
 
-            boolean isModelName = priceScrapper.checkIfModelName(word);
-            System.out.println();
+            boolean isModelName = priceScrapper.checkIfModelName(word,websiteUrl);
 
             System.out.println(skyBlue + "Would you like to scrape cars based on mileage or price? (mileage/price)" + reset);
             String scrapeOption = scanner.nextLine().trim();
@@ -121,7 +120,7 @@ System.out.println();
             System.out.println(skyBlue + "\nWould you like to search cars mileage based on the model " + word + "? (yes/no)" + reset);
             String scrapeChoice = scanner.nextLine().trim();
             if (!scrapeChoice.equalsIgnoreCase("no") && !scrapeChoice.equalsIgnoreCase("yes")) {
-                System.out.println("Please enter either yes/no");
+                System.out.println(yellow + "Please enter either yes/no" + reset);
                 scrapeChoice = scanner.nextLine().trim();
             }
             if (scrapeChoice.equalsIgnoreCase("yes")) {
@@ -132,12 +131,12 @@ System.out.println();
                 System.out.println();
 
                 // Scrap car price data
-                mpgScrapper.scrapCarMpgData(word, minMpg);
+                mpgScrapper.scrapCarMpgData(word, minMpg,websiteUrl);
             } else if(scrapeChoice.equalsIgnoreCase("no")) {
                 Scanner priceScanner = new Scanner(System.in);
                 System.out.print("Enter car model name to perform scrapping on  mileage: ");
                 String carNamePrice = priceScanner.nextLine();
-                while(!priceScrapper.checkIfModelName(carNamePrice)){
+                while(!priceScrapper.checkIfModelName(carNamePrice,websiteUrl)){
                     System.out.println(yellow + "No such car model found. Please enter a valid model name" +reset );
                     carNamePrice=priceScanner.nextLine();
                 }
@@ -147,17 +146,16 @@ System.out.println();
                 System.out.println();
 
                 // Scrap car price data
-                mpgScrapper.scrapCarMpgData(carNamePrice, minMpg);
+                mpgScrapper.scrapCarMpgData(carNamePrice, minMpg,websiteUrl);
             }
         } else {
-
 
                 // Code for scraping car prices
                 Scanner priceScanner = new Scanner(System.in);
                 System.out.print("Enter car model name to perform scrapping on mileage: ");
                 String carNamePrice = priceScanner.nextLine();
 
-                while(!priceScrapper.checkIfModelName(carNamePrice)){
+                while(!priceScrapper.checkIfModelName(carNamePrice,websiteUrl)){
                     System.out.println(yellow + "No such car model found. Please enter a valid model name" +reset );
                     carNamePrice=priceScanner.nextLine();
                 }
@@ -167,7 +165,7 @@ System.out.println();
                 System.out.println();
 
                 // Scrap car price data
-                mpgScrapper.scrapCarMpgData(word, minMpg);
+                mpgScrapper.scrapCarMpgData(word, minMpg,websiteUrl);
 
         }
     } else if (scrapeOption.equalsIgnoreCase("price")) {
@@ -207,7 +205,7 @@ System.out.println();
                 System.out.println();
 
                 // Scrap car price data
-                priceScrapper.scrapCarPriceData(word, minPrice, maxPrice);
+                priceScrapper.scrapCarPriceData(word, minPrice, maxPrice,websiteUrl);
             } else if(scrapeChoice.equalsIgnoreCase("no")) {
                 Scanner priceScanner = new Scanner(System.in);
                 System.out.print("Enter car model name to perform scrapping: ");
@@ -238,7 +236,7 @@ System.out.println();
                 System.out.println();
 
                 // Scrap car price data
-                priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
+                priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice,websiteUrl);
             }
         } else {
 
@@ -272,7 +270,7 @@ System.out.println();
                 System.out.println();
 
                 // Scrap car price data
-                priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice);
+                priceScrapper.scrapCarPriceData(carNamePrice, minPrice, maxPrice,websiteUrl);
 
         }
     }
@@ -317,7 +315,7 @@ System.out.println();
         String userResponse = scanner.nextLine().trim();
 
         while (!userResponse.equalsIgnoreCase("no") && !userResponse.equalsIgnoreCase("yes") ) {
-            System.out.println("Please enter either yes/no");
+            System.out.println(yellow + "Please enter either yes/no" + reset);
             userResponse=scanner.nextLine(); // Handle incorrect input
         }
         if (userResponse.equalsIgnoreCase("yes")) {

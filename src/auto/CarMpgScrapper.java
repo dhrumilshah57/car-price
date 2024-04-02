@@ -13,44 +13,80 @@ import org.jsoup.select.Elements;
 
 public class CarMpgScrapper {
 
-	public void scrapCarMpgData(String carName, long mileage) {
+	public void scrapCarMpgData(String carName, long mileage, String startingUrl) {
 		String reset="\u001B[0m";
 		String yellow= "\u001B[33m";
 		try {
-			// URL for the car search
-			String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
-					"manufacturers=" + carName.replace(" ", "%20") + "&" : "") +
-					"mpg=over" + mileage ;
-
-			// Connect to the website and get its HTML document
-			Document doc = Jsoup.connect(url).get();
-
-			// Select car elements from the HTML document
-			Elements carElements = doc.select("div.css-ai263y.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
-// Select car elements from the HTML document from the second div
-			Elements carElementsSecondDiv = doc.select("div.css-1b1a19r.e1qqueke0 > div.css-fyuinx.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
-			carElements.addAll(carElementsSecondDiv);
-			// List to store scraped car objects
 			List<Car> cars = new ArrayList<>();
+			if(startingUrl.startsWith("https://www.kbb.com")) {
+				String url = "https://www.kbb.com/car-finder/?" + (carName != null && !carName.isEmpty() ?
+						"manufacturers=" + carName.replace(" ", "%20") + "&" : "") +
+						"mpg=over" + mileage;
 
-			// Loop through each car element and extract relevant information
-			for (Element carElement : carElements) {
+				// Connect to the website and get its HTML document
+				Document doc = Jsoup.connect(url).get();
 
-				// Extract car name
-				String name = carElement.select("a.css-z66djy.ewtqiv30").text();
-
-				String year =  carElement.select("a.css-z66djy.ewtqiv30").text().split(" ")[0];
-				String price = carElement.select("div.css-15j21fj.e19qstch15 > div.css-n59ln1.e181er9y2> div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
-
-
-				String mpg = carElement.select("div.css-14q4cew.e19qstch18 > div.css-n59ln1.e181er9y2  > div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
-
-
-				cars.add(new Car(name, year, price, mpg)); // Add car to the list
-
+				// Select car elements from the HTML document
+				Elements carElements = doc.select("div.css-ai263y.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
+// Select car elements from the HTML document from the second div
+				Elements carElementsSecondDiv = doc.select("div.css-1b1a19r.e1qqueke0 > div.css-fyuinx.e1qqueke1 > div.ewtqiv33.css-jwnqcy.e11el9oi0");
+				carElements.addAll(carElementsSecondDiv);
+				// List to store scraped car objects
 
 
+				// Loop through each car element and extract relevant information
+				for (Element carElement : carElements) {
+
+					// Extract car name
+					String name = carElement.select("a.css-z66djy.ewtqiv30").text();
+
+					String year = carElement.select("a.css-z66djy.ewtqiv30").text().split(" ")[0];
+					String price = carElement.select("div.css-15j21fj.e19qstch15 > div.css-n59ln1.e181er9y2> div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
+
+
+					String mpg = carElement.select("div.css-14q4cew.e19qstch18 > div.css-n59ln1.e181er9y2  > div.css-1d3w5wq.e181er9y1 > div.css-15ums5i.e181er9y0 > div.css-fpbjth.e151py7u1").text();
+
+
+					cars.add(new Car(name, year, price, mpg)); // Add car to the list
+
+
+				}
+			}else if(startingUrl.startsWith("https://www.cars.com")) {
+				// URL for the car search
+
+				String url = "https://www.cars.com/shopping/results/?" + (carName != null && !carName.isEmpty() ?
+						"makes=" + carName.replace(" ", "%20") + "&" : "") +
+						"mileage_min=" + mileage ;
+
+				// Connect to the website and get its HTML document
+				Document doc = Jsoup.connect(url).get();
+
+				// Select car elements from the HTML document
+				Elements carElements = doc.select("div.sds-page-section__content > #vehicle-cards-container > div.vehicle-card.ep-theme-hubcap");
+// Select car elements from the HTML document from the second div
+
+
+
+
+				// Loop through each car element and extract relevant information
+				for (Element carElement : carElements) {
+
+					// Extract car name
+					String name = carElement.select("a.vehicle-card-link > h2").text();
+
+					String year = carElement.select("a.vehicle-card-link > h2").text().split(" ")[0];
+					String price = carElement.select("div.vehicle-details > div.price-section.price-section-vehicle-card > span.primary-price").text();
+
+
+					String mpg = carElement.select("div.mileage").text();
+
+
+					cars.add(new CarMpgScrapper.Car(name, year, price, mpg)); // Add car to the list
+
+
+				}
 			}
+
 			if (cars.isEmpty()) {
 				System.out.println(yellow + "No cars found with the specified mileage." + reset);
 				return; // Exit the method

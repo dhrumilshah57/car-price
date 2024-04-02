@@ -1,13 +1,10 @@
-package auto;
 
+package auto;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SpellSuggestion {
 
@@ -150,8 +147,7 @@ public class SpellSuggestion {
 		return edits2;
 	}
 
-	// Public method to check the spelling of a word and suggest a correction if
-	// necessary
+	// Public method to check the spelling of a word and suggest a correction if necessary
 	public String checkSpelling(String word) {
 		String lowerCaseWord = word.toLowerCase();
 		if (searchWordInTrie(lowerCaseWord)) {
@@ -171,15 +167,24 @@ public class SpellSuggestion {
 			isWord = false;
 		}
 	}
-	
+
+	// Public method to check the spelling of a sentence and suggest corrections
+	public String checkSpellingWithSpaces(String sentence) {
+		String[] words = sentence.split("\\s+"); // Tokenize the input sentence into individual words
+		StringBuilder correctedSentence = new StringBuilder();
+
+		for (String word : words) {
+			String correctedWord = checkSpelling(word); // Check spelling of each word
+			correctedSentence.append(correctedWord).append(" ");
+		}
+
+		return correctedSentence.toString().trim();
+	}
+
 	public static void main(String[] args) {
 		SpellSuggestion spellChecker = new SpellSuggestion("..//pages");
-        String word = "mstake";
-        String suggestion = spellChecker.suggestWord(word);
-        if (suggestion.isEmpty()) {
-            System.out.println("No suggestions found for " + word);
-        } else {
-            System.out.println("Did you mean " + suggestion + " ?");
-        }
-    }
+		String sentence = "thiis is a sentennce with mstake";
+		String correctedSentence = spellChecker.checkSpellingWithSpaces(sentence);
+		System.out.println("Corrected Sentence: " + correctedSentence);
+	}
 }
